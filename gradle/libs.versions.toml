@@ -1,0 +1,98 @@
+[versions]
+agp_version = "7.4.2"
+appcompatV7_verison = "1.3.0"
+activityKTX_version = "1.6.1"
+kotlin_version = "1.8.0"
+ksp_verison = "1.8.0-1.0.9"
+glide_version = "4.14.2"
+lottie_version = "5.2.0"
+coroutines_version = "1.7.1"
+
+
+
+minSdkVersion = "21"
+compilesdk = "33"
+targetsdk = "31"
+buildToolsVersion = "34.0.0"
+flavorDimensions = "versionCode"
+
+retrofitSdk_version = "2.9.0"
+gson_version = "2.8.6"
+
+[libraries]
+#BaseView
+appcompatV7 = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatV7_verison" }
+#supportV4  = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "1.0.0" }
+
+activityKTX = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKTX_version" }
+annotations = { group = "androidx.annotation", name = "annotation", version = "1.6.0" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version = "1.2.1" }
+cardview = { group = "androidx.cardview", name = "cardview", version = "1.0.0" }
+constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "1.1.3" }
+viewpage2 = { group = "androidx.viewpager2", name = "viewpager2", version = "1.1.0-alpha01" }
+material = { group = "com.google.android.material", name = "material", version = "1.5.0" }
+
+
+#ImageShow
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide_version" }
+glideTransformations = { group = "jp.wasabeef", name = "glide-transformations", version = "4.0.0" }
+glideCompilerKsp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide_version" }
+
+glideCompiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide_version" }
+glideIntegration = { group = "com.github.bumptech.glide", name = "okhttp3-integration", version.ref = "glide_version" }
+
+#UI
+smartRefreshLayout = { group = "com.scwang.smartrefresh", name = "SmartRefreshLayout", version = "1.1.0-alpha-14" }
+smartRefreshHeader= { group = "com.scwang.smartrefresh", name = "SmartRefreshHeader", version = "1.1.0-alpha-14" }
+flycoTabLayoutLib = { group = "io.github.h07000223", name = "flycoTabLayout", version = "3.0.0" }
+circleimageview = { group = "de.hdodenhof", name = "circleimageview", version = "2.1.0" }
+baseRecyclerViewAdapterHelper = { group = "com.github.CymChad", name = "BaseRecyclerViewAdapterHelper", version = "2.9.50" }
+shadowLayout = { group = "com.github.lihangleo2", name = "ShadowLayout", version = "3.3.2" }
+shapeView = { group = "com.github.getActivity", name = "ShapeView", version = "8.3" }
+easyFloat = { group = "com.github.princekin-f", name = "EasyFloat", version = "2.0.2" }
+curtain = { group = "com.github.soulqw", name = "Curtain", version = "0.1.0" }
+banner = { group = "com.youth.banner", name = "banner", version = "2.1.0" }
+ucrop = { group = "com.github.yalantis", name = "ucrop", version = "2.2.6" }#图片剪裁库
+subsamplingScaleImageView = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view-androidx", version = "3.10.0" }
+autosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version = "v1.2.1" }
+xpopup = { group = "com.github.li-xiaojun", name = "XPopup", version = "2.7.9" }
+flowlayout = { group = "com.zhy", name = "flowlayout-lib", version = "1.0.3" }
+photoView = { group = "com.github.chrisbanes", name = "PhotoView", version = "2.0.0" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie_version" }
+magicIndicator = { group = "com.github.hackware1993", name = "MagicIndicator", version = "1.7.0" } #指示器库
+loopeerShadow = { group = "com.loopeer.lib", name = "shadow", version = "0.0.4-beta3" }
+bigImageViewPager = {group = "com.github.SherlockGougou", name = "BigImageViewPager", version = "androidx-7.2.6"}
+marqueeView = {group = "com.sunfusheng", name = "MarqueeView", version = "1.4.0"}
+
+
+#Util
+xxpermissions = { group = "com.github.getActivity", name = "XXPermissions", version = "18.0" }
+utilcodex = {group = "com.blankj", name = "utilcodex", version = "1.31.1"}
+
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_version" }
+
+#Http
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitSdk_version" }
+retrofitConverGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitSdk_version" }
+
+
+
+okhttp3LogIntergration = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "4.7.2" }
+
+
+kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
+kotlinxCoroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
+
+[bundles]
+smartRefreshPack = ["smartRefreshLayout","smartRefreshHeader"]
+network = ["retrofit", "retrofitConverGson", "okhttp3LogIntergration"]
+kotlinCodePack = ["kotlinxCoroutinesCore","kotlinxCoroutinesAndroid"]
+
+[plugins]
+#kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinKsp = { id = "com.google.devtools.ksp", version.ref = "ksp_verison" }
+kotlinAndroid = { id = "kotlin-android", version.ref = "kotlin_version" }
+
+
+[metadata]
+
