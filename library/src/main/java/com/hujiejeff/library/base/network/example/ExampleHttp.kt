@@ -1,7 +1,7 @@
 package com.hujiejeff.library.base.network.example
 
 import android.util.Log
-import com.szpgm.commonlib.network.HttpAbstract
+import com.hujiejeff.library.base.network.HttpAbstract
 import com.hujiejeff.library.base.network.adaptor.flow.FlowCallAdapterFactory
 import com.hujiejeff.library.base.network.interceptor.NetStateInterceptor
 import kotlinx.coroutines.flow.collectLatest

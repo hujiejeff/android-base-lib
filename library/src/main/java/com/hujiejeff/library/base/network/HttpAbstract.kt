@@ -1,4 +1,4 @@
-package com.szpgm.commonlib.network
+package com.hujiejeff.library.base.network
 
 import android.util.Log
 import com.hujiejeff.library.base.network.interceptor.NetStateInterceptor
