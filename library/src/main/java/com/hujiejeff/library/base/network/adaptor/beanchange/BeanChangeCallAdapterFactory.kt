@@ -1,6 +1,6 @@
 package com.hujiejeff.library.base.network.adaptor.beanchange
 
-import com.szpgm.commonlib.network.entity.ResponseBean
+import com.hujiejeff.library.base.network.entity.ResponseBean
 import kotlinx.coroutines.flow.Flow
 import retrofit2.CallAdapter
 import retrofit2.Retrofit

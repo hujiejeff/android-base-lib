@@ -2,6 +2,7 @@ package com.hujiejeff.library.base
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.hujiejeff.library.base.network.example.ExampleHttp
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,5 +21,10 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.hujiejeff.library.base.test", appContext.packageName)
+    }
+
+    @Test fun test() {
+//        ExampleHttp.exampleRequestByCoroutines()
+        ExampleHttp.exampleByFlowCatchException()
     }
 }

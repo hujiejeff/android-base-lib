@@ -1,13 +1,11 @@
-package com.hujiejeff.library.base.network
+package com.szpgm.commonlib.network
 
 import android.util.Log
-import com.hujiejeff.library.base.network.converter.ResponseBeanConverterFactory
 import com.hujiejeff.library.base.network.interceptor.NetStateInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -66,9 +64,7 @@ abstract class HttpAbstract {
         retrofit = Retrofit.Builder()
             .client(buildOKHttpClient())
             .baseUrl(baseUrl)
-            .also {
-                it.addConverterFactory(configConverter())
-            }
+            .addConverterFactory(GsonConverterFactory.create())
             .also { retrofitBuilder ->
                 getCallAdapterFactory()?.let { retrofitBuilder.addCallAdapterFactory(it) }
                 configureRetrofit(retrofitBuilder)
@@ -100,13 +96,6 @@ abstract class HttpAbstract {
     protected open fun configureRetrofit(builder: Retrofit.Builder): Retrofit.Builder {
         Log.d(TAG, "Customize Retrofit")
         return builder
-    }
-
-    protected open fun configConverter(): Converter.Factory {
-        return if (useStandardResponseBean)
-            ResponseBeanConverterFactory.create()
-        else
-            GsonConverterFactory.create()
     }
 
 }
