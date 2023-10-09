@@ -107,7 +107,7 @@ class NetStateInterceptor : Interceptor {
                 JsonObject().apply {
                     add("response", oldJsonObj)
                     add("errorCode", gson.toJsonTree(ErrorType.SUCCESS))
-                    addProperty("errorMsg", "")
+                    addProperty("errorMsg", System.currentTimeMillis().toString())
                 }
             }
             Log.d("NetStateInterceptor", "buildSuccessResponse: $jsonObject")

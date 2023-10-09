@@ -49,10 +49,10 @@ abstract class HttpAbstract {
         for (interceptor in interceptors) {
             builder.addInterceptor(interceptor)
         }
+        val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         if (useStandardResponseBean) {
             builder.addInterceptor(NetStateInterceptor())
         }
-        val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
         builder.addInterceptor(logger)
         return configureBaseClient(builder).build()
     }

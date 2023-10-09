@@ -43,6 +43,8 @@ dependencies {
     
     api(libs.bundles.network)
     api(libs.bundles.kotlinCodePack)
+    implementation(libs.activityKTX)
+    api(libs.bundles.mvvm)
 }
 
 

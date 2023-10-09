@@ -1,7 +1,9 @@
 package com.hujiejeff.library.base.network.example
 
+import androidx.lifecycle.LiveData
 import com.hujiejeff.library.base.network.entity.ResponseBean
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Call
 import retrofit2.http.GET
 
 interface ExampleApi {
@@ -20,4 +22,12 @@ interface ExampleApi {
      */
     @GET("/banner/json")
     fun getBannersByFlowCatchException(): Flow<ResponseBean<ExampleRespBean<BannerBean>>>
+
+
+    @GET("/banner/json")
+    fun getBannersByLiveData(): LiveData<ResponseBean<ExampleRespBean<List<BannerBean>>>>
+
+
+    @GET("/banner/json")
+    fun getBannerByCall(): Call<ResponseBean<ExampleRespBean<List<BannerBean>>>>
 }

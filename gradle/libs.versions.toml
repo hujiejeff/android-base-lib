@@ -7,6 +7,7 @@ ksp_verison = "1.8.0-1.0.9"
 glide_version = "4.14.2"
 lottie_version = "5.2.0"
 coroutines_version = "1.7.1"
+mvvm_version = "2.5.1"
 
 
 
@@ -31,7 +32,9 @@ cardview = { group = "androidx.cardview", name = "cardview", version = "1.0.0" }
 constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "1.1.3" }
 viewpage2 = { group = "androidx.viewpager2", name = "viewpager2", version = "1.1.0-alpha01" }
 material = { group = "com.google.android.material", name = "material", version = "1.5.0" }
-
+mvvm-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "mvvm_version"}
+mvvm-livedata = {group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "mvvm_version"}
+mvvm-common = {group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "mvvm_version"}
 
 #ImageShow
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide_version" }
@@ -87,6 +90,7 @@ kotlinxCoroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 smartRefreshPack = ["smartRefreshLayout","smartRefreshHeader"]
 network = ["retrofit", "retrofitConverGson", "okhttp3LogIntergration"]
 kotlinCodePack = ["kotlinxCoroutinesCore","kotlinxCoroutinesAndroid"]
+mvvm = ["mvvm-viewmodel", "mvvm-livedata", "mvvm-common"]
 
 [plugins]
 #kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
