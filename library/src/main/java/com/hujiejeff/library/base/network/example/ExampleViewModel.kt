@@ -5,11 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hujiejeff.library.base.network.entity.ResponseBean
 import com.hujiejeff.library.base.network.entity.isSuccess
 import com.hujiejeff.library.base.network.util.RequestState
 import com.hujiejeff.library.base.network.util.asRequestFlow
 import com.hujiejeff.library.base.network.util.asUiStateFlow
-import com.hujiejeff.library.base.network.util.originalRequest
+import com.hujiejeff.library.base.network.util.originalRequestDsl
 import com.hujiejeff.library.base.network.util.singleRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -78,7 +79,7 @@ class ExampleViewModel : ViewModel() {
 
     private val doRequestFlow2 = MutableStateFlow(0)
 
-    private val apiFlow = doRequestFlow2.asRequestFlow {
+    private val apiFlow = doRequestFlow2.asRequestFlow(delayTime = 1000L) {
         ExampleHttp.getApi<ExampleApi>().getBannersByFlow()
     }.map { reqSate ->
         when (reqSate) {
@@ -110,23 +111,26 @@ class ExampleViewModel : ViewModel() {
     private val _sampleFlowDataForCoroutine = MutableStateFlow<UiState>(UiState.FirstLoading)
     val sampleFlowDataForCoroutine = _sampleFlowDataForCoroutine.asStateFlow()
     fun doQuestCoroutines() {
-        singleRequest(
-            api = { ExampleHttp.getApi<ExampleApi>().getBanners() },
-            onStart = {
+        singleRequest<ResponseBean<ExampleRespBean<List<BannerBean>>>> {
+            onStart {
                 _sampleFlowDataForCoroutine.update {
                     UiState.DataLoading
                 }
-            },
-            onSuccess = { data ->
+            }
+            onRequest {
+                ExampleHttp.getApi<ExampleApi>().getBanners()
+            }
+            onSuccess {data ->
                 _sampleFlowDataForCoroutine.update {
-                    UiState.Success(data.data!!)
+                    UiState.Success(data.response?.data!!)
                 }
-            },
-            onFailed = { error ->
+            }
+            onFailed {error ->
                 _sampleFlowDataForCoroutine.update {
-                    UiState.Failed(error)
+                    UiState.Failed(error.toString())
                 }
-            })
+            }
+        }
     }
 
     /**
@@ -134,7 +138,7 @@ class ExampleViewModel : ViewModel() {
      */
 
     fun doCallRequest() {
-        originalRequest(
+        /*originalRequest(
             api = { ExampleHttp.getApi<ExampleApi>().getBannerByCall() },
             onStart = {
                 _sampleFlowDataForCoroutine.update {
@@ -148,9 +152,31 @@ class ExampleViewModel : ViewModel() {
             },
             onFailed = { error ->
                 _sampleFlowDataForCoroutine.update {
-                    UiState.Failed(error)
+                    UiState.Failed(error.toString())
                 }
-            })
+            })*/
+
+        originalRequestDsl<ResponseBean<ExampleRespBean<List<BannerBean>>>> {
+            onRequestForCall {
+                ExampleHttp.getApi<ExampleApi>().getBannerByCall()
+            }
+            onStart {
+                _sampleFlowDataForCoroutine.update {
+                    UiState.DataLoading
+                }
+            }
+            onSuccess {data ->
+                _sampleFlowDataForCoroutine.update {
+                    UiState.Success(data.response?.data!!)
+                }
+            }
+
+            onFailed {error ->
+                _sampleFlowDataForCoroutine.update {
+                    UiState.Failed(error.toString())
+                }
+            }
+        }
     }
 
     sealed class UiState {

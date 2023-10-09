@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.hujiejeff.library.base.network.entity.ResponseBean
 import com.hujiejeff.library.base.network.entity.isSuccess
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
@@ -18,24 +19,25 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 /**
  * 触发流转成请求数据流
  */
 fun <U, T> Flow<U>.asRequestFlow(
+    delayTime: Long = 0,
     dataFlow: (U) -> Flow<ResponseBean<T>>,
 ): Flow<RequestState<T>> {
     return transform { upperValue ->
-        Log.d("hujie", "requestAsStateFlow: ")
-        delay(1000L)
         emit(RequestState.Loading("loading"))
-        delay(1000L)
+        delay(delayTime)
         emitAll(dataFlow(upperValue).map { responseBean ->
             if (responseBean.isSuccess() && responseBean.response != null) {
-                RequestState.Success(responseBean.response!!)
+                RequestState.Success(responseBean.response)
             } else {
                 RequestState.Failed(responseBean.errorMsg)
             }
@@ -67,41 +69,59 @@ fun LifecycleOwner.collectStateFlow(
     }
 }
 
-
+/**
+ * Flow请求数据流状态
+ */
 sealed class RequestState<T> {
     class Success<T>(val data: T) : RequestState<T>()
     class Loading<T>(val msg: String) : RequestState<T>()
     class Failed<T>(val msg: String) : RequestState<T>()
 }
 
+/**
+ * dsl方式协程请求调用
+ */
 inline fun <T> ViewModel.singleRequest(
-    crossinline api: suspend () -> ResponseBean<T>,
-    crossinline onStart: () -> Unit = {},
-    crossinline onSuccess: (T) -> Unit = {},
-    crossinline onFailed: (String) -> Unit = {}
-) = viewModelScope.launch {
-    onStart.invoke()
-    runCatching {
-        api()
-    }.onSuccess {
-        if (it.isSuccess() && it.response != null) {
-            onSuccess.invoke(it.response!!)
-        } else {
-            onFailed.invoke(it.errorMsg)
+    crossinline dsl: suspend HttpRequestDsl<T>.() -> Unit,
+){
+    val httpRequestDsl = HttpRequestDsl<T>()
+    viewModelScope.launch {
+        httpRequestDsl.dsl()
+        withContext(Dispatchers.Main) {
+            httpRequestDsl.onStart?.invoke()
         }
-    }.onFailure {
-        onFailed.invoke(it.toString())
+        runCatching {
+            withContext(Dispatchers.IO) {
+                httpRequestDsl.onRequest?.invoke() ?: throw Exception("data is null")
+            }
+        }.onSuccess {response ->
+            if (response is ResponseBean<*>) {
+                (response as ResponseBean<*>).let {
+                    if (it.isSuccess() && it.response != null) {
+                        httpRequestDsl.onSuccess?.invoke(it as T)
+                    } else {
+                        httpRequestDsl.onFailed?.invoke(Exception(it.errorMsg))
+                    }
+                }
+            } else {
+                httpRequestDsl.onSuccess?.invoke(response as T)
+            }
+
+        }.onFailure {
+            httpRequestDsl.onFailed?.invoke(it)
+        }
     }
 }
+
 
 /**
  * 原始请求
  */
-inline fun <T> ViewModel.originalRequest(
+/*inline fun <T> ViewModel.originalRequest(
     crossinline api: () -> Call<ResponseBean<T>>,
     crossinline onStart: () -> Unit = {},
     crossinline onSuccess: (T) -> Unit = {},
-    crossinline onFailed: (String) -> Unit = {}
+    crossinline onFailed: (Throwable) -> Unit = {}
 ) {
     onStart.invoke()
     api().enqueue(object : Callback<ResponseBean<T>> {
@@ -110,12 +130,81 @@ inline fun <T> ViewModel.originalRequest(
             if (responseBean != null && responseBean.isSuccess() && responseBean.response != null) {
                 onSuccess.invoke(responseBean.response!!)
             } else {
-                onFailed.invoke("other error")
+                onFailed.invoke(Exception(responseBean?.errorMsg?: "null data"))
             }
         }
 
         override fun onFailure(call: Call<ResponseBean<T>>, t: Throwable) {
-            onFailed.invoke("Network error")
+            onFailed.invoke(t)
         }
     })
+}*/
+
+inline fun <T> ViewModel.originalRequestDsl(
+    crossinline dsl: HttpRequestDsl<T>.() -> Unit,
+) {
+    val httpRequestDsl = HttpRequestDsl<T>()
+    httpRequestDsl.dsl()
+    httpRequestDsl.onStart?.invoke()
+    httpRequestDsl.onRequestForCall?.invoke()?.enqueue(object : Callback<T> {
+        override fun onResponse(call: Call<T>, response: Response<T>) {
+            runCatching {
+                response.body() ?: throw Exception("data is null")
+            }.onSuccess {responseBean ->
+                if (responseBean is ResponseBean<*>) {
+                    if (responseBean.isSuccess() && responseBean.response != null) {
+                        httpRequestDsl.onSuccess?.invoke((responseBean))
+                    } else {
+                        httpRequestDsl.onFailed?.invoke(Exception(responseBean.errorMsg))
+                    }
+                } else {
+                    httpRequestDsl.onSuccess?.invoke(responseBean)
+                }
+            }.onFailure {
+                httpRequestDsl.onFailed?.invoke(it)
+            }
+        }
+
+        override fun onFailure(call: Call<T>, t: Throwable) {
+            httpRequestDsl.onFailed?.invoke(t)
+        }
+    })
+}
+
+
+/**
+ * DSL和链式调用
+ */
+class HttpRequestDsl<T> {
+    var onSuccess: ((T) -> Unit)? = null
+    var onFailed: ((Throwable) -> Unit)? = null
+    var onStart: (() -> Unit)? = null
+    var onRequest: (suspend  () -> T)? = null
+    var onRequestForCall: (() -> Call<T>)? = null
+
+    fun onSuccess(onSuccess: ((T) -> Unit)?): HttpRequestDsl<T> {
+        this.onSuccess = onSuccess
+        return this
+    }
+
+    fun onFailed(onFailed: ((Throwable) -> Unit)?): HttpRequestDsl<T> {
+        this.onFailed = onFailed
+        return this
+    }
+
+    fun onStart(onStart: (() -> Unit)?): HttpRequestDsl<T> {
+        this.onStart = onStart
+        return this
+    }
+
+    fun onRequest(onRequest: (suspend () -> T)?): HttpRequestDsl<T> {
+        this.onRequest = onRequest
+        return this
+    }
+
+    fun onRequestForCall(onRequestForCall: (() -> Call<T>)?):HttpRequestDsl<T> {
+        this.onRequestForCall = onRequestForCall
+        return this;
+    }
+
 }
