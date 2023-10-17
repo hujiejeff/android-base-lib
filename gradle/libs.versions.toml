@@ -92,6 +92,11 @@ kotlinxCoroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 #gsyVideoPlayer
 gsyVideoPlayer = { group = "com.github.CarGuo.GSYVideoPlayer", name = "GSYVideoPlayer", version.ref = "gsyVideoPlayer_version" }
 
+#qrcode
+zxing = { group = "com.google.zxing", name = "core", version = "3.5.1" }
+zxingLite = { group = "com.github.jenly1314", name = "zxing-lite", version = "2.4.0" }
+mlkitScanning = { group = "com.google.mlkit", name = "barcode-scanning", version = "17.1.0" }
+
 [bundles]
 smartRefreshPack = ["smartRefreshLayout","smartRefreshHeader"]
 network = ["retrofit", "retrofitConverGson", "okhttp3LogIntergration"]

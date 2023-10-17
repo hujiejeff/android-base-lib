@@ -57,4 +57,9 @@ dependencies {
 
     //video
     api(libs.gsyVideoPlayer)
+
+    //QR Code
+    implementation(libs.zxing)
+    implementation(libs.zxingLite)
+    implementation(libs.mlkitScanning)
 }
