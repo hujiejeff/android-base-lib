@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'maven-publish'
     id 'com.google.devtools.ksp'
 }
 
@@ -30,6 +29,9 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -45,32 +47,14 @@ dependencies {
     api(libs.bundles.kotlinCodePack)
     implementation(libs.activityKTX)
     api(libs.bundles.mvvm)
-}
+    api(libs.xxpermissions)
 
+    api(libs.glide)
+    ksp(libs.glideCompilerKsp)
+    api(libs.glideTransformations)
 
+    api(libs.utilcodex)
 
-// Because the components are created only during the afterEvaluate phase, you must
-// configure your publications using the afterEvaluate() lifecycle method.
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'io.github.hujiejeff'
-                artifactId = 'baselib'
-                version = '0.0.2'
-            }
-            // Creates a Maven publication called “debug”.
-            debug(MavenPublication) {
-                // Applies the component for the debug build variant.
-                from components.debug
-                groupId = 'io.github.hujiejeff'
-                artifactId = 'baselib'
-                version = '0.0.2'
-            }
-        }
-    }
+    //video
+    api(libs.gsyVideoPlayer)
 }

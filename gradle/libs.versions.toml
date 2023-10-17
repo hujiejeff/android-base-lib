@@ -8,6 +8,8 @@ glide_version = "4.14.2"
 lottie_version = "5.2.0"
 coroutines_version = "1.7.1"
 mvvm_version = "2.5.1"
+gsyVideoPlayer_version = 'v8.3.5-release-jitpack'
+
 
 
 
@@ -85,6 +87,10 @@ okhttp3LogIntergration = { group = "com.squareup.okhttp3", name = "logging-inter
 
 kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
 kotlinxCoroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
+
+
+#gsyVideoPlayer
+gsyVideoPlayer = { group = "com.github.CarGuo.GSYVideoPlayer", name = "GSYVideoPlayer", version.ref = "gsyVideoPlayer_version" }
 
 [bundles]
 smartRefreshPack = ["smartRefreshLayout","smartRefreshHeader"]
