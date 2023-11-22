@@ -12,7 +12,7 @@ import com.king.zxing.DecodeConfig
 import com.king.zxing.DecodeFormatManager
 import com.king.zxing.analyze.MultiFormatAnalyzer
 import com.google.zxing.Result
-import com.szpgm.commonlib.R
+import com.hujiejeff.library.base.R
 
 
 class QRCodeScanActivity : CaptureActivity() {
